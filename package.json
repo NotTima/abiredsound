@@ -1,0 +1,13 @@
+{
+  "name": "abi-merchant",
+  "version": "1.0.0",
+  "description": "ABI Merchant — распознавание предметов торговца Arena Breakout: Infinite по звуку",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["arena-breakout", "merchant", "sound-recognition"],
+  "license": "UNLICENSED",
+  "private": true
+}

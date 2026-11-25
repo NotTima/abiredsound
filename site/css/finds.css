@@ -1,0 +1,82 @@
+/* Лента красных находок и карточка своей находки (js/finds.js), на странице входа и на главной. */
+/* ---------- красные находки (js/finds.js), и на странице входа ---------- */
+.finds {
+  --red: #ef4b4b;
+  display: flex; flex-direction: column; gap: 14px; padding: 20px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow);
+}
+.finds-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.finds-head h2 { margin: 0; display: flex; align-items: center; gap: 10px; font: 400 18px/1.2 var(--font-display); }
+.finds-dot { width: 10px; height: 10px; border-radius: 2px; background: var(--red); box-shadow: 0 0 12px rgba(239, 75, 75, 0.6); transform: rotate(45deg); }
+/* «бета»: при наведении (или фокусе с клавиатуры, касании) — подсказка из data-tip */
+.finds-beta { position: relative; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line-strong); color: var(--text-3); font: 600 10px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; cursor: help; outline: none; }
+.finds-beta::after {
+  content: attr(data-tip); position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); z-index: 5;
+  padding: 6px 10px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line-strong); box-shadow: var(--shadow);
+  color: var(--text); font: 500 12.5px/1.3 var(--font-body); text-transform: none; letter-spacing: 0; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity 120ms var(--ease);
+}
+.finds-beta:hover::after, .finds-beta:focus::after { opacity: 1; }
+.finds-beta:focus-visible { border-color: var(--accent); }
+.finds-live { display: inline-flex; align-items: center; gap: 6px; font: 600 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); }
+.finds-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+.finds-live.on { color: var(--good); }
+.finds-live.on::before { background: var(--good); animation: ping 1.6s var(--ease) infinite; }
+.finds-stats { margin: 0; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr) minmax(0, 0.9fr); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--surface-2); }
+.finds-stats > div { padding: 12px 14px; border-right: 1px solid var(--line); min-width: 0; }
+.finds-stats > div:last-child { border-right: 0; }
+.finds-stats dt { font: 600 10.5px/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); }
+.finds-stats dd { margin: 6px 0 0; font: 400 22px/1 var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.finds-stats dd[data-stat="total"] { color: var(--red); }
+.finds-stats.bump dd { animation: finds-bump 600ms var(--ease); }
+@keyframes finds-bump { 30% { transform: scale(1.12); color: var(--accent-2); } }
+.finds-list { list-style: none; margin: 0; padding: 0 4px 0 0; display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.finds-list:empty { display: none; }
+.find {
+  position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 8px 12px 8px 10px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line);
+}
+.find::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: var(--red); }
+.find img, .find-noimg { width: 44px; height: 44px; object-fit: contain; border-radius: var(--r-sm); border: 1px solid var(--line); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--red) 22%, #151816), #0e100f); }
+.find-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.find-name small { display: block; margin-top: 2px; font: 500 12px var(--font-body); color: var(--text-3); }
+.find-mine { display: none; margin-left: 8px; padding: 1px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font: 700 10px/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.find.mine { border-color: var(--accent-line); background: linear-gradient(90deg, var(--accent-soft), var(--surface-2) 60%); }
+.find.mine .find-mine { display: inline-block; }
+.find-price { font: 600 14px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--text); }
+.find.fresh { animation: find-in 900ms var(--ease); }
+@keyframes find-in { from { opacity: 0; transform: translateY(-8px); background: rgba(239, 75, 75, 0.25); } 40% { opacity: 1; transform: none; } }
+.finds-empty { margin: 0; color: var(--text-3); font-size: 13.5px; text-align: center; padding: 12px 0; }
+.finds-empty[hidden] { display: none; }
+.main-finds { margin-bottom: 32px; }
+
+/* карточка-трофей своей находки */
+.trophy {
+  position: fixed; right: 24px; bottom: 24px; z-index: 50; width: min(380px, calc(100vw - 32px)); overflow: hidden; cursor: pointer;
+  display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 16px; align-items: center; padding: 16px 40px 16px 16px;
+  background: radial-gradient(120% 140% at 0% 0%, rgba(239, 75, 75, 0.28), transparent 60%), var(--surface-2);
+  border: 1px solid rgba(239, 75, 75, 0.6); border-radius: var(--r-lg);
+  box-shadow: 0 0 0 1px rgba(239, 75, 75, 0.15), 0 0 48px -6px rgba(239, 75, 75, 0.55), var(--shadow);
+  animation: trophy-in 620ms cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.trophy.out { animation: trophy-out 280ms var(--ease) forwards; }
+.trophy-ic img, .trophy-ic .find-noimg { display: block; width: 76px; height: 76px; object-fit: contain; border-radius: var(--r); border: 1px solid rgba(239, 75, 75, 0.5); background: radial-gradient(circle at 50% 40%, rgba(239, 75, 75, 0.35), #0e100f); animation: trophy-ic 1.6s var(--ease) 300ms; }
+.trophy-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.trophy-kicker { font: 700 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.12em; color: #ff6b6b; }
+.trophy-name { font: 400 19px/1.15 var(--font-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trophy-price { font: 600 16px/1.2 var(--font-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.trophy-n { font-size: 12.5px; color: var(--text-3); }
+.trophy-x { position: absolute; top: 8px; right: 10px; width: 26px; height: 26px; border: 0; border-radius: 6px; background: none; color: var(--text-3); font-size: 20px; line-height: 1; cursor: pointer; }
+.trophy-x:hover { color: var(--text); background: var(--surface-hover); }
+.trophy-shine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.16) 50%, transparent 65%); transform: translateX(-100%); animation: trophy-shine 1.4s var(--ease) 450ms; }
+@keyframes trophy-in { from { opacity: 0; transform: translateY(24px) scale(0.92); } }
+@keyframes trophy-out { to { opacity: 0; transform: translateY(12px) scale(0.97); } }
+@keyframes trophy-shine { to { transform: translateX(100%); } }
+@keyframes trophy-ic { 0% { transform: scale(1); } 20% { transform: scale(1.12) rotate(-4deg); } 40% { transform: scale(1) rotate(2deg); } 60% { transform: none; } }
+@media (max-width: 420px) { .trophy { right: 16px; bottom: 16px; } }
+.main-finds .finds-list { max-height: 420px; }
+@media (max-width: 420px) {
+  .finds { padding: 16px; }
+  .finds-stats dd { font-size: 19px; }
+  .finds-stats > div { padding: 10px; }
+}

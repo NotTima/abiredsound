@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# HAR dumps (too large for git)
+*.har
+
+# Build/debug artifacts
+*.out
+*.log
+npm.log
+srv.log
+
+# Scraping workspace (not needed for the app)
+_scrape/
+
+# Deobfuscation workspace
+deob/
+core/
+
+# Utility scripts
+deobf_all.py
+deobf_all.js
+unhar.py
+unhar_all.py
+find_wav.py
+getcore.sh
+code_audio.txt
+code_audio_pretty.js
+har_all.txt
+har_js.txt
+v.txt
+hz.md
+main.js
+
+# OS
+.DS_Store
+Thumbs.db
