@@ -1,11 +1,11 @@
 {
-  "name": "ABI Merchant",
-  "short_name": "ABI",
-  "description": "Распознавание предметов торговца Arena Breakout: Infinite по звуку",
+  "name": "ABI RedSound",
+  "short_name": "RedSound",
+  "description": "ABI RedSound — распознавание предметов торговца Arena Breakout: Infinite по звуку",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b0d0c",
-  "theme_color": "#0b0d0c",
+  "background_color": "#0a0809",
+  "theme_color": "#0a0809",
   "icons": [
     { "src": "/img/site/icon-96.png", "sizes": "96x96", "type": "image/png" },
     { "src": "/img/site/icon.svg", "sizes": "any", "type": "image/svg+xml" }

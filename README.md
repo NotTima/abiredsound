@@ -1,6 +1,8 @@
-# ABI Merchant
+# ABI RedSound
 
 Веб-приложение для игры **Arena Breakout: Infinite** — распознаёт предметы торговца (Field Merchant) по звуку и показывает, что в грузе, шансы на редкие предметы и окупаемость.
+
+*by Euthanasia // Timaa*
 
 ## Как это работает
 
@@ -13,13 +15,15 @@
 ## Быстрый старт
 
 ```bash
-git clone https://github.com/<your-username>/abi-merchant.git
-cd abi-merchant
-node server.js
-# Открыть http://localhost:8080 в Chrome
+# 1. Запуск локального сервера
+npm start
+# или: node server.js
+
+# 2. Открыть в Firefox или Chrome
+# http://localhost:8080
 ```
 
-> **Node.js** 18+ требуется. Зависимостей нет — сервер на чистом `http`.
+> **Поддержка Firefox**: Полная! В Firefox при нажатии «Слушать игру» выбирается окно игры, а если браузер не отдаёт системный звук напрямую через захват экрана, автоматически запросится доступ к аудиоустройству (Monitor of Built-in Audio / Stereo Mix / микрофон).
 
 ## Структура проекта
 

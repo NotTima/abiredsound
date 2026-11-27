@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-en="ABI Merchant: what's in the merchant cargo by sound · Arena Breakout: Infinite">ABI Merchant: что в грузе торговца по звуку · Arena Breakout: Infinite</title>
-  <script src="js/lang.js"></script>
-  <script src="js/mobile.js"></script>
-  <meta name="description" data-en-content="ABI Merchant listens to Arena Breakout: Infinite, recognizes the Field Merchant cargo sound and shows which items are inside, their odds and payback. Runs in the browser, nothing to install." content="ABI Merchant слушает Arena Breakout: Infinite, узнаёт звук груза Field Merchant и показывает, какие предметы внутри, их шансы и окупаемость. Работает в браузере, без установки.">
-  <meta name="theme-color" content="#0b0d0c">
-  <meta property="og:title" content="ABI Merchant: что в грузе по звуку">
+  <title data-en="ABI RedSound: what's in the merchant cargo by sound · Arena Breakout: Infinite">ABI RedSound: что в грузе торговца по звуку · Arena Breakout: Infinite</title>
+  <script>try{if(!localStorage.getItem("rs.auth.token"))document.documentElement.classList.add("rs-locked");}catch{}</script>
+  <script src="js/lang.js?v=local2"></script>
+  <script src="js/mobile.js?v=local2"></script>
+  <meta name="description" data-en-content="ABI RedSound listens to Arena Breakout: Infinite, recognizes the Field Merchant cargo sound and shows which items are inside, their odds and payback. Runs in the browser, nothing to install." content="ABI RedSound слушает Arena Breakout: Infinite, узнаёт звук груза Field Merchant и показывает, какие предметы внутри, их шансы и окупаемость. Работает в браузере, без установки.">
+  <meta name="theme-color" content="#090607">
+  <meta property="og:title" content="ABI RedSound: что в грузе по звуку">
   <meta property="og:description" content="Распознаёт предмет в грузе Field Merchant по звуку и считает шансы и окупаемость.">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/img/site/icon.svg" type="image/svg+xml">
@@ -19,12 +20,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Russo+One&display=swap">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/finds.css">
+  <link rel="stylesheet" href="css/style.css?v=local4">
+  <link rel="stylesheet" href="css/finds.css?v=local3">
   <meta name="me-sk" content="b51b3e8f1ebe0851cbb144ffff9cc5ff36496f61cc967a27fca85443fd62701f" data-t="1795599143028">
 </head>
 <body>
-  <script src="js/browser.js"></script>
+  <script src="js/browser.js?v=local2"></script>
   <!-- Иконки (Lucide, ISC) — используются и в разметке, и в JS через <use href="#i-…"> -->
   <svg id="sprite" width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
@@ -66,18 +67,26 @@
 
   <header class="nav">
     <div class="nav-inner">
-      <a class="brand" href="#top" aria-label="ABI Merchant: наверх" data-en-aria-label="ABI Merchant: top">
+      <a class="brand" href="#top" aria-label="ABI RedSound: наверх" data-en-aria-label="ABI RedSound: top">
         <svg class="brand-mark"><use href="#i-logo"/></svg>
-        <span class="brand-name">ABI <b>Merchant</b></span>
+        <span class="brand-name">ABI <b>RedSound</b></span><span class="brand-badge">RED</span>
       </a>
-      <button class="btn small ghost nav-guide" type="button" data-guide title="Видеоинструкция" data-en-title="Video guide"><svg class="i"><use href="#i-play"/></svg><span data-en="Guide">Инструкция</span></button>
-      <a class="btn small ghost nav-tg" href="https://t.me/abiear" target="_blank" rel="noopener" title="Наша группа в Telegram" data-en-title="Our Telegram group"><svg class="i"><use href="#i-tg"/></svg><span>Telegram</span></a>
+      <button class="btn small ghost nav-guide" type="button" data-guide title="Видеоинструкция" data-en-title="Video guide"><svg class="i"><use href="#i-play"/></svg><span data-en="Guides">Гайды</span></button>
+      <span class="rs-role-badge" id="rsRoleBadge" hidden></span>
+      <button class="btn small primary nav-admin" id="rsAdminBtn" type="button" hidden><svg class="i"><use href="#i-sliders"/></svg><span data-en="Admin">Админка</span></button>
+      <button class="btn small ghost nav-cloak" id="rsCloakBtn" type="button" aria-pressed="false" title="Маскировка вкладки (Alt+X)" data-en-title="Tab Cloak (Alt+X)"><svg class="i"><use href="#i-shield"/></svg><span data-en="Stealth">Маскировка</span></button>
+      <button class="btn small ghost nav-alert" id="rsAlertBtn" type="button" aria-pressed="false" title="Включить/выключить Red Alert HUD" data-en-title="Toggle Red Alert HUD"><svg class="i"><use href="#i-zap"/></svg><span data-en="Red HUD">Red HUD</span></button>
       <button class="btn small ghost nav-lang" type="button" data-lang-switch>EN</button>
       <button class="btn small ghost nav-logout" id="logoutBtn" title="Выйти: на этом устройстве снова понадобится ключ" aria-label="Выйти" data-en-title="Log out: this device will need the key again" data-en-aria-label="Log out"><svg class="i"><use href="#i-logout"/></svg></button>
     </div>
   </header>
 
   <main id="top">
+    <div class="rs-motd" id="rsMotdBar" hidden role="status">
+      <svg class="i"><use href="#i-zap"/></svg>
+      <span class="rs-motd-text" id="rsMotdText"></span>
+      <button class="rs-motd-x" id="rsMotdClose" type="button" aria-label="Закрыть">×</button>
+    </div>
     <section class="pc-only" id="pcOnly" aria-labelledby="pcOnlyTitle">
       <span class="pc-only-ic"><svg class="i"><use href="#i-monitor"/></svg></span>
       <h1 id="pcOnlyTitle" data-en="Open the site on your PC">Откройте сайт на компьютере</h1>
@@ -130,6 +139,18 @@
             <button class="btn ghost" id="phoneBtn" title="Смотреть результат на телефоне" data-en-title="See results on your phone"><svg class="i"><use href="#i-phone"/></svg><span data-en="Phone">Телефон</span></button>
             <button class="btn primary" id="listen"><svg class="i"><use href="#i-wave"/></svg><span data-en="Listen to game">Слушать игру</span></button>
             <button class="btn danger" id="stop" hidden><svg class="i"><use href="#i-stop"/></svg><span data-en="Stop">Стоп</span></button>
+            <div class="rs-stealth-box">
+              <button type="button" class="rs-stealth-btn" id="rsStealthAudioToggle" role="switch" aria-checked="true">
+                <span class="rs-switch-dot" aria-hidden="true"></span>
+                <span data-en="Stealth: Audio Only">Stealth: Только звук</span>
+              </button>
+              <p class="rs-stealth-hint" id="rsStealthAudioHint"></p>
+              <button type="button" class="btn small ghost wide" id="rsMicTestBtn"><svg class="i"><use href="#i-activity"/></svg><span data-en="Audio test">Тест звука</span></button>
+              <div class="rs-mic-meter" id="rsMicMeter" hidden>
+                <div class="rs-mic-bar"><i id="rsMicFill"></i></div>
+                <small id="rsMicText"></small>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -150,7 +171,60 @@
     <section class="help" id="help" aria-label="Перед игрой" data-en-aria-label="Before you play"></section>
 
     <section class="finds main-finds" data-finds aria-label="Красные находки" data-en-aria-label="Red finds"></section>
+
+    <section class="rs-section" id="rsLab" aria-label="RedSound Lab">
+      <div class="rs-head">
+        <h2><svg class="i"><use href="#i-activity"/></svg><span data-en="RedSound Lab: Soundboard & Raid Luck">RedSound Lab: Саундборд и Удача рейда</span></h2>
+        <p class="rs-sub" data-en="Click any item to test real in-game Pickup / Drop audio and train your ear for red loot.">Нажимай на предметы, чтобы послушать реальные звуки Pickup / Drop из игры и натренировать слух.</p>
+      </div>
+      <div class="rs-lab-grid">
+        <div class="rs-soundboard" id="rsSoundboardGrid"></div>
+        <div class="rs-luck-box">
+          <h3 data-en="Merchant Luck Scanner">Сканер Удачи Торговца</h3>
+          <p data-en="Check what kind of mood the Field Merchant is in right now before opening the cargo.">Проверь настроение Торговца перед тем, как вскрывать груз в рейде.</p>
+          <button type="button" class="btn primary wide" id="rsLuckBtn"><svg class="i"><use href="#i-flask"/></svg><span data-en="Check Merchant Luck">Проверить удачу в рейде</span></button>
+          <div class="rs-luck-result" id="rsLuckResult" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rs-section" id="rsGuides" aria-label="Tactical Guides">
+      <div class="rs-head">
+        <h2><svg class="i"><use href="#i-library"/></svg><span data-en="Field Merchant Secrets & Firefox Pro Tips">Гайды и хитрости Field Merchant + Firefox</span></h2>
+      </div>
+      <div class="rs-guides-grid">
+        <article class="rs-guide-card">
+          <span class="rs-guide-kicker" data-en="TIP #1 · DOUBLE SIGNAL">СОВЕТ #1 · ДВОЙНОЙ СИГНАЛ</span>
+          <h3 data-en="The Pickup + Drop trick">Трюк с двойным звуком (Up + Down)</h3>
+          <p data-en="Don't just hover over cargo. Pick it up slightly and drop it back into the grid: both Pickup and Drop sounds play in a row, boosting detection accuracy close to 100%.">Не просто наводи курсор на груз: слегка приподними его и сразу отпусти обратно в сетку. Проиграются два уникальных звука подряд (подъём + сброс), что поднимает точность распознавания почти до 100%.</p>
+        </article>
+        <article class="rs-guide-card">
+          <span class="rs-guide-kicker" data-en="TIP #2 · RED TIER AUDIO">СОВЕТ #2 · ОХОТА НА КРАСНОЕ</span>
+          <h3 data-en="How red-tier items sound">Как отличить «Красный» лут на слух</h3>
+          <p data-en="Listen for heavy porcelain/ceramic clinks (Teapot, Vase, Statue) and crisp metallic clicks (Golden Clock, Gold Chain). Light plastic or paper usually means cheap filler.">Ищи в звуке тяжёлый звон фарфора/керамики (Чайник, Статуя, Ваза) или чёткий металлический щелчок (Золотые часы, Цепь). Лёгкий пластик и шелест бумаги почти всегда выдают дешёвый хлам.</p>
+        </article>
+        <article class="rs-guide-card">
+          <span class="rs-guide-kicker" data-en="TIP #3 · FIREFOX AUDIO">СОВЕТ #3 · ЗВУК В FIREFOX</span>
+          <h3 data-en="Clean game audio without mic noise">Идеальный звук в Firefox без шума</h3>
+          <p data-en="When Firefox asks for audio access, pick Monitor of Built-in Audio (on Linux) or Stereo Mix (on Windows) instead of your voice mic — then ABI RedSound hears only crystal-clear game audio.">Когда Firefox запрашивает доступ к аудиоустройству после выбора окна игры, выбирай <code>Monitor of Built-in Audio</code> (на Linux) или <code>Stereo Mix</code> (на Windows) вместо обычного микрофона — так сайт слышит только чистый звук игры.</p>
+        </article>
+        <article class="rs-guide-card">
+          <span class="rs-guide-kicker" data-en="TIP #4 · SLOT MATH">СОВЕТ #4 · МАТЕМАТИКА СЛОТОВ</span>
+          <h3 data-en="Smart cargo sizing & payback">Выгодные размеры груза</h3>
+          <p data-en="Slots sized 1×1 and 2×2 with glass/metal audio give the highest profit per cell. Huge 3×2 crates with high merchant price often hide heavy low-margin tech.">Ящики <code>1×1</code> и <code>2×2</code> со звуком стекла/золота дают максимальную окупаемость на клетку. Огромные грузы <code>3×2</code> с высокой ценой часто оказываются тяжёлым проходным хламом.</p>
+        </article>
+      </div>
+    </section>
   </main>
+
+  <footer class="rs-footer">
+    <div class="rs-footer-left">
+      <svg class="brand-mark" style="width:22px;height:22px;"><use href="#i-logo"/></svg>
+      <b>ABI <span>RedSound</span></b>
+      <span>· Arena Breakout: Infinite Audio Analyzer</span>
+    </div>
+    <div class="rs-author" title="Кликни 3 раза для сюрприза ;)">by Euthanasia // Timaa</div>
+  </footer>
 
   <dialog class="map-dialog map-pick" id="mapDialog" aria-labelledby="mapDialogTitle">
     <div class="map-dialog-head">
@@ -215,10 +289,77 @@
     </div>
   </dialog>
 
-  <script type="module" src="js/main.js"></script>
-  <script type="module" src="js/logout.js"></script>
-  <script type="module" src="js/help.js"></script>
-  <script type="module" src="js/guide.js"></script>
-  <script type="module" src="js/finds.js"></script>
+
+  <div class="rs-gate" id="rsGate" hidden role="dialog" aria-modal="true" aria-labelledby="rsGateTitle">
+    <div class="rs-gate-card">
+      <div class="rs-gate-brand">
+        <svg class="brand-mark"><use href="#i-logo"/></svg>
+        <span class="brand-name">ABI <b>RedSound</b></span>
+        <span class="brand-badge">ACCESS</span>
+      </div>
+      <h1 id="rsGateTitle" data-en="Enter access code">Вход в систему</h1>
+      <p class="rs-gate-sub" data-en="Enter your personal access code to launch ABI RedSound.">Введи специальный код доступа, чтобы запустить анализатор.</p>
+      <form class="rs-gate-form" id="rsGateForm" autocomplete="off">
+        <input class="rs-gate-input" id="rsGateCode" type="text" placeholder="ARS-XX" maxlength="24" autofocus spellcheck="false">
+        <button class="btn primary lg wide" type="submit"><svg class="i"><use href="#i-key"/></svg><span data-en="Unlock">Войти</span></button>
+      </form>
+      <p class="rs-gate-err" id="rsGateErr" role="alert"></p>
+      <div class="rs-gate-foot">by Euthanasia // Timaa · Firefox Stealth Ready</div>
+    </div>
+  </div>
+
+  <dialog class="map-dialog rs-adm-dialog" id="rsAdminDialog" aria-labelledby="rsAdmTitle">
+    <div class="map-dialog-head">
+      <h2 id="rsAdmTitle"><svg class="i" style="color:var(--accent);vertical-align:-3px;margin-right:8px;"><use href="#i-sliders"/></svg>Админ-панель · ARS-12</h2>
+      <button class="btn ghost small icon-only" id="rsAdminClose" type="button" aria-label="Закрыть"><svg class="i"><use href="#i-x"/></svg></button>
+    </div>
+
+    <div class="rs-adm-stats">
+      <div class="rs-adm-stat"><span>Всего входов</span><b id="rsStatTotal">0</b></div>
+      <div class="rs-adm-stat"><span>За сегодня</span><b id="rsStatToday">0</b></div>
+      <div class="rs-adm-stat"><span>Уникальных</span><b id="rsStatUnique">0</b></div>
+      <div class="rs-adm-stat"><span>Активных</span><b id="rsStatActive">1</b></div>
+    </div>
+
+    <form class="rs-adm-form" id="rsAdmForm">
+      <h3>Управление сайтом</h3>
+      <label class="rs-adm-field">
+        <span>Объявление (баннер дня наверху сайта)</span>
+        <input type="text" id="rsAdmMotd" maxlength="400" placeholder="Текст объявления для всех пользователей...">
+      </label>
+      <div class="rs-adm-checks">
+        <label><input type="checkbox" id="rsAdmMotdOn"> Показывать объявление</label>
+        <label><input type="checkbox" id="rsAdmAllowUsers"> Разрешить вход юзерам (ARS-67)</label>
+        <label><input type="checkbox" id="rsAdmShowLab"> Показывать Саундборд и Сканер удачи</label>
+        <label><input type="checkbox" id="rsAdmStealthDef"> Stealth «Только звук» по умолчанию</label>
+      </div>
+      <label class="rs-adm-field">
+        <span>Код для обычных пользователей</span>
+        <input type="text" id="rsAdmUserCode" maxlength="24" placeholder="ARS-67">
+      </label>
+      <div class="rs-adm-actions">
+        <button type="submit" class="btn primary">Сохранить настройки</button>
+        <button type="button" class="btn ghost" id="rsAdmRefresh">Обновить статистику</button>
+        <button type="button" class="btn danger small" id="rsAdmClearStats">Сбросить счётчик</button>
+        <span class="rs-adm-status" id="rsAdmStatus"></span>
+      </div>
+    </form>
+
+    <div class="rs-adm-log-wrap">
+      <h3>Журнал посещений (последние 20)</h3>
+      <table class="rs-adm-table">
+        <thead><tr><th>Время</th><th>Код</th><th>Роль</th><th>Клиент</th></tr></thead>
+        <tbody id="rsAdmLogBody"></tbody>
+      </table>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/auth-admin.js?v=local4"></script>
+  <script type="module" src="js/main.js?v=local2"></script>
+  <script type="module" src="js/logout.js?v=local2"></script>
+  <script type="module" src="js/help.js?v=local2"></script>
+  <script type="module" src="js/guide.js?v=local2"></script>
+  <script type="module" src="js/finds.js?v=local2"></script>
+  <script type="module" src="js/redsound-extras.js?v=local3"></script>
 </body>
 </html>
