@@ -12,14 +12,13 @@
 4. Сайт захватывает аудио → даунсэмплинг → NCC-корреляция по 76 шаблонам pickup/drop (ускорение через `engine.wasm`)
 5. Определяет предмет → показывает шансы и окупаемость по выбранной карте
 
-## Быстрый старт (локально)
+## Быстрый старт (локально, без Node.js)
 
 ```bash
-# Вариант 1: через Node.js сервер
-npm start
-# или: node server.js
+# Вариант 1: через встроенный скрипт (Python 3)
+python3 serve.py
 
-# Вариант 2: как чистая статика (как на GitHub Pages)
+# Вариант 2: стандартный модуль Python 3
 python3 -m http.server 8080 --directory site
 
 # Открыть в Firefox или Chrome:
@@ -31,8 +30,9 @@ python3 -m http.server 8080 --directory site
 ## Структура проекта
 
 ```
-├── .github/workflows/pages.yml  ← Автодеплой папки site/ на GitHub Pages
-├── server.js                    ← Локальный сервер (опционально)
+├── index.html                   ← Редирект в site/ для GitHub Pages (Deploy from a branch)
+├── .nojekyll                    ← Отключение Jekyll на GitHub Pages
+├── serve.py                     ← Локальный статический сервер на Python 3 (опционально)
 ├── site/                        ← Всё приложение (полностью автономная статика)
 │   ├── index.html               ← Точка входа
 │   ├── .nojekyll                ← Отключение Jekyll на GitHub Pages
@@ -54,27 +54,12 @@ python3 -m http.server 8080 --directory site
 
 ## Как лучше всего выложить на GitHub Pages
 
-Самый удобный и правильный способ для этого проекта — **через встроенный GitHub Actions workflow** (файл `.github/workflows/pages.yml` уже добавлен), потому что само приложение лежит в подпапке `site/`, а не в корне репозитория.
+Репозиторий уже полностью настроен под стандартный режим **Deploy from a branch** (без Node.js и без GitHub Actions):
 
-### Пошаговая инструкция:
-
-1. **Создай репозиторий на GitHub** (можно приватный, если не хочешь светить код, но для приватных репозиториев GitHub Pages доступен на тарифе Pro; для бесплатного аккаунта проще сделать публичный репозиторий или использовать Cloudflare Pages).
-2. **Залей папку `abiproject` в ветку `main`**:
-   ```bash
-   cd abiproject
-   git init
-   git add .
-   git commit -m "ABI RedSound ready for GitHub Pages"
-   git branch -M main
-   git remote add origin https://github.com/<твой-логин>/<имя-репозитория>.git
-   git push -u origin main
-   ```
-3. **Включи GitHub Pages через Actions**:
-   - Открой репозиторий на GitHub → **Settings** → **Pages**.
-   - В разделе **Build and deployment → Source** выбери **GitHub Actions** (не «Deploy from a branch»).
-4. **Готово!**
-   - Перейди во вкладку **Actions** — workflow `Deploy ABI RedSound to GitHub Pages` автоматически соберёт и опубликует содержимое папки `site/`.
-   - Через ~30 секунд сайт будет доступен по адресу `https://<твой-логин>.github.io/<имя-репозитория>/`.
-   - Скидывай ссылку друзьям и ключ входа (`ARS-67`, `ARS-12` или `REDSOUND` — ключи можно поменять в `site/js/auth-admin.js` в `VALID_KEYS`).
+1. В настройках репозитория на GitHub открой **Settings → Pages**.
+2. В разделе **Build and deployment → Source** выбери **Deploy from a branch**.
+3. Укажи **Branch**: `main`, **Folder**: `/ (root)` и нажми **Save**.
+4. Через ~30–60 секунд сайт откроется по адресу `https://<твой-логин>.github.io/<имя-репозитория>/` (корневой `index.html` сразу перенаправит в `site/`).
+5. Ключи входа: `ARS-67`, `ARS-12` или `REDSOUND` (их можно поменять в `site/js/auth-admin.js` в `VALID_KEYS`).
 
 > **Важно**: GitHub Pages работает по **HTTPS**, а для захвата аудио (`getDisplayMedia` / `getUserMedia`) в браузере обязательно нужен именно HTTPS — поэтому на GitHub Pages всё будет работать из коробки!
