@@ -1,4 +1,4 @@
-// ABI RedSound — Soundboard, Tactical Guides, Luck Detector & Red Alert HUD
+// ABI RedSound — Soundboard, Catalog Explorer (189 items), Red Alert HUD & Easter Egg
 const SOUNDS = [
   { id: 'teapot', ru: 'Чайник', en: 'Teapot', tag: 'RED', up: 'audio/Prop_Acc_Teapot_UP.ogg', down: 'audio/Prop_Acc_Teapot_Down.ogg' },
   { id: 'goldchain', ru: 'Золотая цепь', en: 'Gold Chain', tag: 'GOLD', up: 'audio/Item_GoldChain_Up.ogg', down: 'audio/Item_GoldChain_Down.ogg' },
@@ -12,23 +12,13 @@ const SOUNDS = [
   { id: 'glass', ru: 'Стекло / Ваза', en: 'Glass / Vase', tag: 'RED', up: 'audio/Item_Glass_Up.ogg', down: 'audio/Item_Glass_Down.ogg' }
 ];
 
-const LUCK_LINES_RU = [
-  { pct: 94, title: 'КРАСНЫЙ СИГНАЛ!', msg: 'Чайник или Лев уже дышат тебе в спину. Проверяй слоты 2×2 — не пропусти звук фарфора!', sound: 'audio/Prop_Acc_Teapot_UP.ogg' },
-  { pct: 81, title: 'ГОРЯЧИЙ ЛУТ', msg: 'Торговец сегодня щедрый: высокий шанс поймать золотую цепь или часы.', sound: 'audio/Item_GoldChain_Up.ogg' },
-  { pct: 63, title: 'НОРМАЛЬНЫЙ РЕЙД', msg: 'Золотишко будет, но придётся дёрнуть груз пару раз для двойного сигнала Up + Down.', sound: 'audio/Item_Coin_Up.ogg' },
-  { pct: 42, title: 'ОСТОРОЖНО: СКАМ', msg: 'Слышишь звон пластика и бумаги? Торговец пытается впарить мыло по цене видеокарты.', sound: 'audio/Prop_Acc_Plastic_Small_UP.ogg' },
-  { pct: 17, title: 'КРИТИЧЕСКИЙ ГОЛЯК', msg: 'Дикие всё вынесли до тебя. Но кто не рискует — тот не лутает красный в 3×2!', sound: 'audio/Item_Misc_Small_Paper_Up.ogg' },
-  { pct: 99, title: 'ДЖЕКПОТ ARENA BREAKOUT', msg: 'Максимальная частота RedSound! Секретный документ на подходе — вкл. звук на максимум!', sound: 'audio/Prop_Acc_Statue_UP.ogg' }
-];
-
-const LUCK_LINES_EN = [
-  { pct: 94, title: 'RED SIGNAL DETECTED!', msg: 'A Teapot or Golden Lion is breathing down your neck. Check 2×2 slots and listen for porcelain!', sound: 'audio/Prop_Acc_Teapot_UP.ogg' },
-  { pct: 81, title: 'HOT CARGO', msg: 'The Field Merchant feels generous today: high odds for Gold Chain or Clock.', sound: 'audio/Item_GoldChain_Up.ogg' },
-  { pct: 63, title: 'SOLID RAID', msg: 'Good profit ahead — remember to drag the cargo slightly to trigger both Pickup & Drop sounds.', sound: 'audio/Item_Coin_Up.ogg' },
-  { pct: 42, title: 'SCAM ALERT', msg: 'Hearing light plastic and paper? The merchant is trying to sell junk at GPU prices.', sound: 'audio/Prop_Acc_Plastic_Small_UP.ogg' },
-  { pct: 17, title: 'DRY RUN', msg: 'Scavs looted everything before you. Still, one cheeky 3×2 check never hurts!', sound: 'audio/Item_Misc_Small_Paper_Up.ogg' },
-  { pct: 99, title: 'REDSOUND JACKPOT', msg: 'Peak red-tier resonance! Secret Document vibes detected — crank up your Firefox audio monitor!', sound: 'audio/Prop_Acc_Statue_UP.ogg' }
-];
+const RARITY_META = {
+  6: { label: 'RED', cls: 'r-6' },
+  5: { label: 'GOLD', cls: 'r-5' },
+  4: { label: 'PURPLE', cls: 'r-4' },
+  3: { label: 'BLUE', cls: 'r-3' },
+  1: { label: 'COMMON', cls: 'r-1' }
+};
 
 let currentAudio = null;
 const soundToggleState = new Map();
@@ -37,13 +27,21 @@ function isRu() {
   return document.documentElement.lang !== 'en';
 }
 
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function fmtPrice(n) {
+  return new Intl.NumberFormat(isRu() ? 'ru-RU' : 'en-US').format(Math.round(n || 0));
+}
+
 function playSoundFile(url, btn) {
   try {
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
     }
-    document.querySelectorAll('.rs-pad.playing').forEach(el => el.classList.remove('playing'));
+    document.querySelectorAll('.rs-pad.playing, .rs-cat-play.playing').forEach((el) => el.classList.remove('playing'));
     const audio = new Audio(url);
     audio.volume = 0.7;
     currentAudio = audio;
@@ -57,18 +55,20 @@ function renderSoundboard() {
   const grid = document.getElementById('rsSoundboardGrid');
   if (!grid) return;
   const ru = isRu();
-  grid.innerHTML = SOUNDS.map(s => `
+  grid.innerHTML = SOUNDS.map(
+    (s) => `
     <button type="button" class="rs-pad" data-id="${s.id}" title="${ru ? 'Клик: поднять / положить звук' : 'Click: alternate Up / Down sound'}">
       <span class="rs-pad-tag">${s.tag}</span>
       <span class="rs-pad-name">${ru ? s.ru : s.en}</span>
       <span class="rs-pad-mode">UP / DOWN</span>
     </button>
-  `).join('');
+  `
+  ).join('');
 
-  grid.querySelectorAll('.rs-pad').forEach(btn => {
+  grid.querySelectorAll('.rs-pad').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
-      const item = SOUNDS.find(x => x.id === id);
+      const item = SOUNDS.find((x) => x.id === id);
       if (!item) return;
       const nextDown = !!soundToggleState.get(id);
       soundToggleState.set(id, !nextDown);
@@ -79,30 +79,94 @@ function renderSoundboard() {
   });
 }
 
-function initLuckDetector() {
-  const btn = document.getElementById('rsLuckBtn');
-  const out = document.getElementById('rsLuckResult');
-  if (!btn || !out) return;
+async function initCatalogExplorer() {
+  const listEl = document.getElementById('rsCatList');
+  const searchEl = document.getElementById('rsCatSearch');
+  const filtersEl = document.getElementById('rsCatFilters');
+  if (!listEl || !searchEl || !filtersEl) return;
 
-  btn.addEventListener('click', () => {
-    const list = isRu() ? LUCK_LINES_RU : LUCK_LINES_EN;
-    const pick = list[Math.floor(Math.random() * list.length)];
-    out.hidden = false;
-    out.classList.remove('pop');
-    void out.offsetWidth;
-    out.classList.add('pop');
-    out.innerHTML = `
-      <div class="rs-luck-meter">
-        <span class="rs-luck-pct">${pick.pct}%</span>
-        <div class="rs-luck-bar"><i style="width:${pick.pct}%"></i></div>
-      </div>
-      <div class="rs-luck-text">
-        <b>${pick.title}</b>
-        <p>${pick.msg}</p>
-      </div>
-    `;
-    playSoundFile(pick.sound);
+  let items = [];
+  let soundMap = new Map();
+  let activeRarity = 'all';
+
+  try {
+    const res = await fetch('api/catalog');
+    const data = await res.json();
+    items = (data.items || []).slice().sort((a, b) => (b.rarity - a.rarity) || (b.referencePrice - a.referencePrice));
+    for (const s of data.sounds || []) {
+      soundMap.set(s.id, s);
+    }
+  } catch {
+    listEl.innerHTML = `<div class="empty">${isRu() ? 'Не удалось загрузить каталог' : 'Failed to load catalog'}</div>`;
+    return;
+  }
+
+  const render = () => {
+    const q = searchEl.value.trim().toLowerCase();
+    const filtered = items.filter((it) => {
+      if (activeRarity !== 'all' && String(it.rarity) !== activeRarity) return false;
+      if (!q) return true;
+      const sz = `${it.size?.[0]}x${it.size?.[1]}`;
+      const szAlt = `${it.size?.[0]}×${it.size?.[1]}`;
+      return (
+        it.name.toLowerCase().includes(q) ||
+        (it.categoryName || '').toLowerCase().includes(q) ||
+        sz.includes(q) ||
+        szAlt.includes(q)
+      );
+    });
+
+    if (!filtered.length) {
+      listEl.innerHTML = `<div class="empty">${isRu() ? 'Ничего не найдено' : 'No matching items'}</div>`;
+      return;
+    }
+
+    listEl.innerHTML = filtered
+      .slice(0, 80)
+      .map((it) => {
+        const rm = RARITY_META[it.rarity] || RARITY_META[1];
+        const sz = `${it.size?.[0] || 1}×${it.size?.[1] || 1}`;
+        const snd = it.soundId ? soundMap.get(it.soundId) : null;
+        const playBtn = snd
+          ? `<button type="button" class="rs-cat-play" data-sound="audio/${esc(snd.pickup)}.ogg" title="${isRu() ? 'Послушать звук' : 'Play sound'}"><svg class="i"><use href="#i-play"/></svg></button>`
+          : '';
+        return `
+          <div class="rs-cat-row ${rm.cls}">
+            <img class="rs-cat-img" src="${esc(it.iconUrl)}" alt="" loading="lazy">
+            <div class="rs-cat-info">
+              <div class="rs-cat-name">${esc(it.name)}</div>
+              <div class="rs-cat-meta">
+                <span class="rs-cat-tag">${rm.label}</span>
+                <span>${sz}</span>
+                <span>${esc(it.categoryName || '')}</span>
+              </div>
+            </div>
+            <div class="rs-cat-prices">
+              <b>${fmtPrice(it.referencePrice)}</b>
+              <small>${isRu() ? 'торг:' : 'merch:'} ${fmtPrice(it.contactPrice)}</small>
+            </div>
+            ${playBtn}
+          </div>
+        `;
+      })
+      .join('');
+
+    listEl.querySelectorAll('.rs-cat-play').forEach((b) => {
+      b.addEventListener('click', () => playSoundFile(b.dataset.sound, b));
+    });
+  };
+
+  searchEl.addEventListener('input', render);
+  filtersEl.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      filtersEl.querySelectorAll('.chip').forEach((c) => c.classList.remove('on'));
+      chip.classList.add('on');
+      activeRarity = chip.dataset.rarity || 'all';
+      render();
+    });
   });
+
+  render();
 }
 
 function initRedAlert() {
@@ -141,12 +205,11 @@ function initBrandEasterEgg() {
 }
 
 renderSoundboard();
-initLuckDetector();
+initCatalogExplorer();
 initRedAlert();
 initBrandEasterEgg();
 
-// Re-render soundboard labels if language switches
 const langSwitch = document.querySelector('[data-lang-switch]');
 if (langSwitch) {
-  langSwitch.addEventListener('click', () => setTimeout(renderSoundboard, 50));
+  langSwitch.addEventListener('click', () => setTimeout(() => { renderSoundboard(); }, 50));
 }
