@@ -210,6 +210,30 @@
     <div class="rs-author" title="Кликни 3 раза для сюрприза ;)">by Euthanasia // Timaa</div>
   </footer>
 
+  <div hidden aria-hidden="true">
+    <button id="reportBtn" type="button" hidden></button>
+    <button id="phoneBtn" type="button" hidden></button>
+    <dialog id="reportDialog">
+      <button id="reportClose" type="button"></button>
+      <textarea id="reportText"></textarea>
+      <span id="reportState"></span>
+      <button id="reportSend" type="button"></button>
+    </dialog>
+    <dialog id="phoneDialog">
+      <button id="phoneClose" type="button"></button>
+      <div id="phoneQr"></div>
+      <span id="phoneHost"></span>
+      <div id="phoneFoot"></div>
+      <span id="phoneState"></span>
+      <button id="phoneRotate" type="button"></button>
+      <button id="phoneCopy" type="button"></button>
+      <div id="phoneConfirm">
+        <button id="phoneRotateNo" type="button"></button>
+        <button id="phoneRotateYes" type="button"></button>
+      </div>
+    </dialog>
+  </div>
+
   <dialog class="map-dialog map-pick" id="mapDialog" aria-labelledby="mapDialogTitle">
     <div class="map-dialog-head">
       <button class="btn ghost small" id="mapBack" hidden><svg class="i"><use href="#i-chevron"/></svg><span data-en="Back">Назад</span></button>
