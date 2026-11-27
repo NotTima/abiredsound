@@ -157,8 +157,20 @@
         <div class="rs-soundboard" id="rsSoundboardGrid"></div>
         <div class="rs-catalog-box">
           <div class="rs-cat-top">
-            <h3 data-en="Merchant Catalog (189)">Каталог предметов (189)</h3>
-            <input type="search" class="rs-cat-search" id="rsCatSearch" placeholder="Поиск (Teapot, Gold, 2×2...)" data-en-placeholder="Search (Teapot, Gold, 2×2...)">
+            <div class="rs-cat-head-row">
+              <h3 data-en="Slot & Loot Lookup (189)">Калькулятор слота и справочник (189)</h3>
+              <span class="rs-cat-count" id="rsCatCount">189 / 189</span>
+            </div>
+            <div class="rs-cat-search-row">
+              <input type="search" class="rs-cat-search" id="rsCatSearch" placeholder="Поиск (Чайник, Teapot, Золото...)" data-en-placeholder="Search (Teapot, Gold, Lion...)">
+              <select class="rs-cat-select" id="rsCatSort" aria-label="Сортировка">
+                <option value="rarity_desc" data-en="Sort: Rarity & Price ↓">Сортировка: Редкость и цена ↓</option>
+                <option value="price_desc" data-en="Sort: Market price ↓">Цена (барахолка) ↓</option>
+                <option value="price_asc" data-en="Sort: Market price ↑">Цена (барахолка) ↑</option>
+                <option value="merch_desc" data-en="Sort: Merchant price ↓">Цена (торговец) ↓</option>
+                <option value="name_asc" data-en="Sort: Name A-Z">По названию (А–Я)</option>
+              </select>
+            </div>
           </div>
           <div class="rs-cat-filters" id="rsCatFilters">
             <button type="button" class="chip on" data-rarity="all" data-en="All">Все</button>
@@ -166,6 +178,23 @@
             <button type="button" class="chip" data-rarity="5">GOLD</button>
             <button type="button" class="chip" data-rarity="4">PURPLE</button>
             <button type="button" class="chip" data-rarity="3">BLUE</button>
+            <button type="button" class="chip" data-rarity="1">COMMON</button>
+          </div>
+          <div class="rs-cat-filters rs-cat-sizes" id="rsCatSizes">
+            <button type="button" class="chip on" data-size="all" data-en="Any size">Любой размер</button>
+            <button type="button" class="chip" data-size="1x1">1×1</button>
+            <button type="button" class="chip" data-size="1x2">1×2</button>
+            <button type="button" class="chip" data-size="2x1">2×1</button>
+            <button type="button" class="chip" data-size="2x2">2×2</button>
+            <button type="button" class="chip" data-size="2x3">2×3</button>
+            <button type="button" class="chip" data-size="3x2">3×2</button>
+          </div>
+          <div class="rs-cat-sound-row">
+            <select class="rs-cat-select" id="rsCatSound" aria-label="Фильтр по звуку">
+              <option value="all" data-en="All sounds (38)">Все звуки (38)</option>
+            </select>
+            <button type="button" class="btn small ghost" id="rsCatSoundPlay" disabled title="Послушать выбранный звук (Up / Down)"><svg class="i"><use href="#i-play"/></svg><span data-en="Listen">Звук</span></button>
+            <button type="button" class="btn small ghost" id="rsCatReset" title="Сбросить все фильтры" data-en-title="Reset filters"><svg class="i"><use href="#i-reset"/></svg></button>
           </div>
           <div class="rs-cat-list" id="rsCatList"></div>
         </div>
